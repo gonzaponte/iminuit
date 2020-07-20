@@ -669,6 +669,41 @@ cdef class Minuit:
 
         self.cfmin = NULL
 
+    def __getstate__(self):
+        return {
+          "pos2var": self.pos2var,
+          "var2pos": self.var2pos,
+          "fcn": self.fcn,
+          "grad": self.grad,
+          "use_array_call": self.use_array_call,
+          "throw_nan": self.throw_nan,
+          "print_level": self.print_level,
+          "errordef": self.errordef,
+          "merrors": self.merrors,
+          "ncalls": self.ncalls,
+          "ngrads": self.ngrads,
+          "figarg": self.fitarg,
+          "values": self.values[:],
+          "errors": self.errors[:],
+          "cfmin": None
+        }
+
+    def __setstate__(self, state):
+        self.pos2var = state["pos2var"]
+        self.var2pos = state["var2pos"]
+        self.fcn = state["fcn"]
+        self.grad = state["grad"]
+        self.throw_nan = state["throw_nan"]
+        self.use_array_call = state["use_array_call"]
+        self.print_level = state["print_level"]
+        self._init_pyfcn(state["errordef"])
+        self.merrors = state["merrors"]
+        self.ngrads = state["ngrads"]
+        self.ncalls = state["ncalls"]
+        # self.initial_upst =
+        # self.last_upst =
+        # self.cfmin =
+
     def _init_args_values_errors_fixed(self):
         self.args = ArgsView(self)
         self.args._state = &self.last_upst
